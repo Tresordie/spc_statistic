@@ -1,0 +1,77 @@
+# ============================================================
+# SPC统计分析工具 - YAML配置文件示例模板
+# ============================================================
+# 使用说明:
+#   1. 复制此文件为 spc_config.yaml
+#   2. 修改 base_dir 为数据文件所在目录
+#   3. 在 projects 下添加项目配置
+#   4. spec_limits 格式: 参数名: [LSL下限, USL上限]
+#   5. 参数名必须与CSV文件中的列名完全一致
+#   6. 运行: python spc_analysis.py --config spc_config.yaml
+#
+# 注意事项:
+#   - 路径使用正斜杠 / 或双反斜杠 \\
+#   - 绝对路径直接使用，相对路径基于 base_dir 解析
+#   - 规格限必须是数值（整数或浮点数）
+#   - 若只有单边规格，可将另一侧设为 null（需程序处理）
+# ============================================================
+
+version: "1.0"
+
+# 所有相对路径的基础目录
+base_dir: "F:/your/data/directory"
+
+projects:
+  # ============================================================
+  # 示例项目1: 电压/电流测试
+  # ============================================================
+  - name: "示例项目 - PCBA电压测试"
+    id: "example_pcba_voltage_test"
+    csv_file: "./test_data_pcba.csv"       # 相对于 base_dir 的路径
+    output:
+      html: "pcba_voltage_report.html"
+      pdf: "pcba_voltage_report.pdf"
+      img_dir: "pcba_voltage_images"
+    spec_limits:
+      # 格式: 参数名: [LSL下限, USL上限]
+      # 参数名必须与CSV列名完全一致
+      Voltage_3V3: [3.2, 3.45]            # 3.3V电源测试
+      Voltage_5V0: [4.75, 5.25]           # 5V电源测试
+      Voltage_12V: [11.5, 12.5]           # 12V电源测试
+      Current_Idle: [0.038, 0.05]         # 待机电流(A)
+      Current_Active: [0.15, 0.25]        # 工作电流(A)
+
+  # ============================================================
+  # 示例项目2: 温度/传感器测试
+  # ============================================================
+  - name: "示例项目 - 传感器测试"
+    id: "example_sensor_test"
+    csv_file: "./test_data_sensor.csv"
+    output:
+      html: "sensor_report.html"
+      pdf: "sensor_report.pdf"
+      img_dir: "sensor_images"
+    spec_limits:
+      Temperature_CPU: [20, 80]           # CPU温度(°C)
+      Temperature_Battery: [0, 45]        # 电池温度(°C)
+      Accel_X: [-0.1, 0.1]               # X轴加速度(g)
+      Accel_Y: [-0.1, 0.1]               # Y轴加速度(g)
+      Accel_Z: [0.9, 1.1]                # Z轴加速度(g)
+      Gyro_X: [-1.0, 1.0]                # X轴角速度(°/s)
+      Gyro_Y: [-1.0, 1.0]                # Y轴角速度(°/s)
+      Gyro_Z: [-1.0, 1.0]                # Z轴角速度(°/s)
+
+  # ============================================================
+  # 如何添加更多项目：复制以下模板并修改
+  # ============================================================
+  # - name: "你的项目名称"
+  #   id: "your_project_id"               # 唯一标识，用于命令行 --project 参数
+  #   csv_file: "./your_data.csv"
+  #   output:
+  #     html: "your_report.html"
+  #     pdf: "your_report.pdf"
+  #     img_dir: "your_images"
+  #   spec_limits:
+  #     Your_Test_Param_1: [1.0, 2.0]
+  #     Your_Test_Param_2: [3.0, 4.0]
+  #     Your_Test_Param_3: [-0.5, 0.5]
