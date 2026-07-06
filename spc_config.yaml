@@ -21,7 +21,7 @@ projects:
   # ============================================================
   - name: "EHM_PCBA_BFT"
     id: "ehm_pcba_test"
-    csv_file: "./Metro_EHM_BFT_301_summary_sort_20260706_102733.csv"
+    csv_file: ""
     output:
       html: "ehm_pcba_test.html"
       pdf: "ehm_pcba_test.pdf"
@@ -184,7 +184,7 @@ projects:
   # ============================================================
   - name: "EHM_MODULE_FT"
     id: "ehm_module_test"
-    csv_file: "./Metro_EHM_Module_302_summary_sort_20260623_144334.csv"
+    csv_file: ""
     output:
       html: "ehm_module_test_after_cycle_time_optimized.html"
       pdf: "ehm_module_test_after_cycle_time_optimized.pdf"
@@ -267,7 +267,7 @@ projects:
   # ============================================================
   - name: "Hybrid_FATP932"
     id: "hybrid_fatp_932_test"
-    csv_file: "./Metro_Hybrid_FATP932_302_summary_sort_20260623_144334.csv"
+    csv_file: ""
     output:
       html: "Metro_Hybrid_FATP932.html"
       pdf: "Metro_Hybrid_FATP932.pdf"
@@ -317,7 +317,7 @@ projects:
   # ============================================================
   - name: "Hybrid_FATP933"
     id: "hybrid_fatp_933_test"
-    csv_file: "./Metro_Hybrid_FATP932_302_summary_sort_20260623_144334.csv"
+    csv_file: ""
     output:
       html: "Metro_Hybrid_FATP933.html"
       pdf: "Metro_Hybrid_FATP933.pdf"
@@ -380,7 +380,7 @@ projects:
   # ============================================================
   - name: "MONOLITH_LEFT_DOOR"
     id: "monolith_solar_left_door"
-    csv_file: "./Metro_Hybrid_FATP932_302_summary_sort_20260623_144334.csv"
+    csv_file: ""
     output:
       html: "Monolith_Solar_Left_Door.html"
       pdf: "Monolith_Solar_Left_Door.pdf"
@@ -398,7 +398,7 @@ projects:
   # ============================================================
   - name: "MONOLITH_RIGHT_DOOR"
     id: "monolith_solar_right_door"
-    csv_file: "./Metro_Hybrid_FATP932_302_summary_sort_20260623_144334.csv"
+    csv_file: ""
     output:
       html: "Monolith_Solar_Right_Door.html"
       pdf: "Monolith_Solar_Right_Door.pdf"
@@ -416,7 +416,7 @@ projects:
   # ============================================================
   - name: "COSMO_VCU_PCBA101"
     id: "cosmo_vcu_pcba101"
-    csv_file: "./Metro_Hybrid_FATP932_302_summary_sort_20260623_144334.csv"
+    csv_file: ""
     output:
       html: "Cosmo_VCU101_PCBA.html"
       pdf: "Cosmo_VCU101_PCBA.pdf"
@@ -446,7 +446,7 @@ projects:
   # ============================================================
   - name: "COSMO_VCU_PCBA103"
     id: "cosmo_vcu_pcba103"
-    csv_file: "./Metro_Hybrid_FATP932_302_summary_sort_20260623_144334.csv"
+    csv_file: ""
     output:
       html: "Cosmo_VCU103_PCBA.html"
       pdf: "Cosmo_VCU103_PCBA.pdf"
@@ -521,3 +521,20 @@ projects:
       DAC_ID_I2C_Value: [18, 18]
       Speaker_Play_Sound_Value: [-60.00, -15.00]
       BTLE_RSSI_Value: [-65.00, -35.00]
+
+  # ============================================================
+  # 项目7: metro leak test
+  # ============================================================
+  - name: "METRO_LEAKAGE_TEST"
+    id: "metro_leakage_test"
+    csv_file: ""
+    output:
+      html: "metro_leakage_test.html"
+      pdf: "metro_leakage_test.pdf"
+    spec_limits:
+      Pressure_Setup: [9.5, 12]
+      Inflation_time: [0, 310]
+      Stabilization_time: [0, 30]
+      Test_time: [0, 30]
+      Pressure_KPa: [9.5, 12]
+      Leak_KPa: [-0.2, 0.2]
