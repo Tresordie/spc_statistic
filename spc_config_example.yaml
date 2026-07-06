@@ -31,7 +31,6 @@ projects:
     output:
       html: "pcba_voltage_report.html"
       pdf: "pcba_voltage_report.pdf"
-      img_dir: "pcba_voltage_images"
     spec_limits:
       # 格式: 参数名: [LSL下限, USL上限]
       # 参数名必须与CSV列名完全一致
@@ -50,7 +49,6 @@ projects:
     output:
       html: "sensor_report.html"
       pdf: "sensor_report.pdf"
-      img_dir: "sensor_images"
     spec_limits:
       Temperature_CPU: [20, 80]           # CPU温度(°C)
       Temperature_Battery: [0, 45]        # 电池温度(°C)
@@ -70,7 +68,6 @@ projects:
   #   output:
   #     html: "your_report.html"
   #     pdf: "your_report.pdf"
-  #     img_dir: "your_images"
   #   spec_limits:
   #     Your_Test_Param_1: [1.0, 2.0]
   #     Your_Test_Param_2: [3.0, 4.0]

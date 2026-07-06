@@ -30,7 +30,10 @@
     main(config=config)   # 直接传入ProjectConfig对象即可
 """
 
+import base64
+import io
 import os
+import sys
 import warnings
 from typing import Dict, List, Optional, Tuple
 
@@ -39,6 +42,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy.stats import norm
+
+# Windows 控制台编码设置，确保 emoji 和中文正常显示
+if sys.platform == 'win32':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 # 忽略matplotlib/pandas等库产生的警告信息，保持输出整洁
 warnings.filterwarnings("ignore")
@@ -104,10 +115,9 @@ def plot_histogram_with_modern_style(
     mean: float,
     std: float,
     cpk: float,
-    image_path: str,
 ) -> plt.Figure:
     """
-    绘制现代化的直方图 + 正态分布拟合曲线，并保存为PNG图片。
+    绘制现代化的直方图 + 正态分布拟合曲线。
 
     生成的图表包含:
     - 蓝色半透明直方图（数据分布）
@@ -131,8 +141,6 @@ def plot_histogram_with_modern_style(
             样本标准差
         cpk : float
             过程能力指数
-        image_path : str
-            PNG图片保存路径
 
     返回:
         matplotlib.figure.Figure
@@ -149,9 +157,9 @@ def plot_histogram_with_modern_style(
     n, bins, patches = ax.hist(
         data,
         bins=min(30, len(np.unique(data))),
-        density=True,          # 归一化为概率密度
+        density=True,  # 归一化为概率密度
         alpha=0.7,
-        color="#3498db",       # 蓝色
+        color="#3498db",  # 蓝色
         edgecolor="#2980b9",
         linewidth=1.0,
         label="Data Distribution",
@@ -171,12 +179,30 @@ def plot_histogram_with_modern_style(
     )
 
     # --- 绘制规格限（LSL/USL）和均值线 ---
-    ax.axvline(lsl, color="#27ae60", linestyle="--", lw=2.5,
-               label=f"LSL = {lsl:.3f}", alpha=0.8)
-    ax.axvline(usl, color="#27ae60", linestyle="--", lw=2.5,
-               label=f"USL = {usl:.3f}", alpha=0.8)
-    ax.axvline(mean, color="#e67e22", linestyle="-", lw=2.5,
-               label=f"Mean = {mean:.3f}", alpha=0.9)
+    ax.axvline(
+        lsl,
+        color="#27ae60",
+        linestyle="--",
+        lw=2.5,
+        label=f"LSL = {lsl:.3f}",
+        alpha=0.8,
+    )
+    ax.axvline(
+        usl,
+        color="#27ae60",
+        linestyle="--",
+        lw=2.5,
+        label=f"USL = {usl:.3f}",
+        alpha=0.8,
+    )
+    ax.axvline(
+        mean,
+        color="#e67e22",
+        linestyle="-",
+        lw=2.5,
+        label=f"Mean = {mean:.3f}",
+        alpha=0.9,
+    )
 
     # --- 智能Cpk显示 ---
     # 根据Cpk值选择不同颜色和符号：
@@ -199,13 +225,22 @@ def plot_histogram_with_modern_style(
 
     # Cpk信息框(放在左上角，带圆角边框)
     ax.text(
-        0.02, 0.97, cpk_text,
+        0.02,
+        0.97,
+        cpk_text,
         transform=ax.transAxes,
-        fontsize=14, fontweight="bold",
-        verticalalignment="top", horizontalalignment="left",
+        fontsize=14,
+        fontweight="bold",
+        verticalalignment="top",
+        horizontalalignment="left",
         color=cpk_color,
-        bbox=dict(boxstyle="round,pad=0.6", facecolor="white",
-                  edgecolor=cpk_color, alpha=0.95, linewidth=2),
+        bbox=dict(
+            boxstyle="round,pad=0.6",
+            facecolor="white",
+            edgecolor=cpk_color,
+            alpha=0.95,
+            linewidth=2,
+        ),
     )
 
     # --- 处理长参数名（自动换行） ---
@@ -226,20 +261,42 @@ def plot_histogram_with_modern_style(
         display_name = "\n".join(lines)
 
     # --- 标题和标签 ---
-    ax.set_title(f"Parameter: {display_name}", fontsize=16,
-                 fontweight="bold", pad=20, color="#2c3e50")
+    ax.set_title(
+        f"Parameter: {display_name}",
+        fontsize=16,
+        fontweight="bold",
+        pad=20,
+        color="#2c3e50",
+    )
 
     # 副标题（样本数，显示在x轴下方）
-    ax.text(0.5, -0.15, f"Sample Size: n = {len(data)}",
-            transform=ax.transAxes, fontsize=11, ha="center", color="#7f8c8d")
+    ax.text(
+        0.5,
+        -0.15,
+        f"Sample Size: n = {len(data)}",
+        transform=ax.transAxes,
+        fontsize=11,
+        ha="center",
+        color="#7f8c8d",
+    )
 
     ax.set_xlabel("Value", fontsize=13, fontweight="bold", color="#2c3e50", labelpad=10)
-    ax.set_ylabel("Probability Density", fontsize=13, fontweight="bold",
-                  color="#2c3e50", labelpad=10)
+    ax.set_ylabel(
+        "Probability Density",
+        fontsize=13,
+        fontweight="bold",
+        color="#2c3e50",
+        labelpad=10,
+    )
 
     # 图例（右上角）
-    ax.legend(loc="upper right", fontsize=9.5, framealpha=0.9,
-              edgecolor="#bdc3c7", facecolor="#f8f9fa")
+    ax.legend(
+        loc="upper right",
+        fontsize=9.5,
+        framealpha=0.9,
+        edgecolor="#bdc3c7",
+        facecolor="#f8f9fa",
+    )
 
     # 网格（半透明虚线）
     ax.grid(True, alpha=0.3, linestyle="--", linewidth=0.8, color="#95a5a6")
@@ -254,9 +311,6 @@ def plot_histogram_with_modern_style(
 
     # 自动调整布局
     plt.tight_layout()
-
-    # 保存PNG图片（150 DPI，用于嵌入HTML报告）
-    plt.savefig(image_path, dpi=150, bbox_inches="tight")
 
     return fig
 
@@ -304,10 +358,17 @@ def generate_pdf_report(
             # 准备表格数据（转换为字符串列表）
             table_data = []
             for s in page_stats:
-                table_data.append([
-                    s["Parameter"], s["Mean"], s["Sigma"],
-                    s["LSL"], s["USL"], s["Cpk"], str(s["n"]),
-                ])
+                table_data.append(
+                    [
+                        s["Parameter"],
+                        s["Mean"],
+                        s["Sigma"],
+                        s["LSL"],
+                        s["USL"],
+                        s["Cpk"],
+                        str(s["n"]),
+                    ]
+                )
 
             columns = ["Parameter", "Mean", "Sigma", "LSL", "USL", "Cpk", "n"]
 
@@ -317,8 +378,10 @@ def generate_pdf_report(
 
             # 创建表格，指定各列宽度比例
             table = ax.table(
-                cellText=table_data, colLabels=columns,
-                loc="center", cellLoc="center",
+                cellText=table_data,
+                colLabels=columns,
+                loc="center",
+                cellLoc="center",
                 colWidths=[0.32, 0.12, 0.12, 0.11, 0.11, 0.11, 0.11],
             )
 
@@ -375,12 +438,22 @@ def generate_pdf_report(
 
             # 添加页面标题（多页时显示页码）
             if total_pages > 1:
-                title_text = f"SPC Statistical Summary (Page {page_idx + 1}/{total_pages})"
+                title_text = (
+                    f"SPC Statistical Summary (Page {page_idx + 1}/{total_pages})"
+                )
             else:
                 title_text = "SPC Statistical Summary"
 
-            fig_table.text(0.5, 0.96, title_text, ha="center", va="top",
-                           fontsize=14, fontweight="bold", color="#2c3e50")
+            fig_table.text(
+                0.5,
+                0.96,
+                title_text,
+                ha="center",
+                va="top",
+                fontsize=14,
+                fontweight="bold",
+                color="#2c3e50",
+            )
 
             # 保存当前PDF页并关闭figure释放内存
             pdf.savefig(fig_table, dpi=300, bbox_inches="tight")
@@ -393,10 +466,16 @@ def generate_pdf_report(
                 fig = fig_dict[param]
 
                 # 在图表底部添加页脚信息
-                fig.text(0.5, 0.02,
-                         f"SPC Report - {param} ({idx + 1}/{len(stats)})",
-                         ha="center", va="bottom", fontsize=8,
-                         color="#7f8c8d", alpha=0.7)
+                fig.text(
+                    0.5,
+                    0.02,
+                    f"SPC Report - {param} ({idx + 1}/{len(stats)})",
+                    ha="center",
+                    va="bottom",
+                    fontsize=8,
+                    color="#7f8c8d",
+                    alpha=0.7,
+                )
 
                 # 保存到PDF并关闭figure
                 pdf.savefig(fig, dpi=300, bbox_inches="tight")
@@ -406,7 +485,7 @@ def generate_pdf_report(
 # ================================ HTML报告生成 ================================
 
 
-def generate_html_report(stats: List[Dict], img_dir: str, output_html: str):
+def generate_html_report(stats: List[Dict], fig_dict: Dict[str, plt.Figure], output_html: str):
     """
     生成现代化的响应式HTML统计报告。
 
@@ -414,15 +493,15 @@ def generate_html_report(stats: List[Dict], img_dir: str, output_html: str):
     1. 渐变色页眉
     2. 统计概览卡片（总参数数、总样本数、Cpk分布统计）
     3. 统计表格（Cpk值根据大小自动着色）
-    4. 分布图卡片网格
+    4. 分布图卡片网格（图片以Base64内嵌，确保HTML文件自包含）
     5. 页脚
 
     参数:
         stats : list of dict
             统计结果列表，每个dict包含:
             {Parameter, Mean, Sigma, LSL, USL, Cpk, n}
-        img_dir : str
-            分布图PNG图片所在目录
+        fig_dict : dict
+            {参数名: Figure对象} 的映射，图片将从内存转为Base64嵌入HTML
         output_html : str
             输出HTML文件路径
     """
@@ -759,13 +838,24 @@ def generate_html_report(stats: List[Dict], img_dir: str, output_html: str):
 
     # --- 生成分布图卡片 ---
     # 为每个参数生成一个带标题和图片的卡片
+    # 图片以 Base64 内嵌到 HTML 中，确保发送给他人时图片可正常显示
     for s in stats:
-        param_safe = s["Parameter"].replace("/", "_")
-        img_file = os.path.join(img_dir, f"{param_safe}.png")
+        param = s["Parameter"]
+        # 将 Figure 对象转为 Base64 编码字符串，内嵌到 HTML 中
+        if param in fig_dict:
+            buf = io.BytesIO()
+            fig_dict[param].savefig(buf, format='png', dpi=150, bbox_inches='tight')
+            buf.seek(0)
+            img_b64 = base64.b64encode(buf.read()).decode('utf-8')
+            buf.close()
+            img_src = f"data:image/png;base64,{img_b64}"
+        else:
+            # Figure 不存在时，显示占位提示
+            img_src = ""
         html_content += f"""                    <div class="plot-card">
                         <div class="plot-header">{s["Parameter"]}</div>
                         <div class="plot-body">
-                            <img src="{img_file}" alt="{s["Parameter"]} Distribution">
+                            <img src="{img_src}" alt="{s["Parameter"]} Distribution">
                         </div>
                     </div>
 """
@@ -854,11 +944,7 @@ def main(config: ProjectConfig = None, config_yaml: str = None, project_id: str 
 
     print()
 
-    # --- 步骤2: 创建输出目录 ---
-    # 确保图片输出目录存在，若不存在则自动创建
-    os.makedirs(config.output.img_dir, exist_ok=True)
-
-    # --- 步骤3: 逐个处理spec_limits中定义的测试参数 ---
+    # --- 步骤2: 逐个处理spec_limits中定义的测试参数 ---
     # stats 用于收集表格数据，fig_dict 用于收集分布图
     stats = []
     fig_dict = {}
@@ -891,20 +977,21 @@ def main(config: ProjectConfig = None, config_yaml: str = None, project_id: str 
             cpk_display = "inf"
 
         # 3e. 将统计结果追加到列表（用于生成表格报告）
-        stats.append({
-            "Parameter": param,
-            "Mean": f"{mean_val:.4f}",
-            "Sigma": f"{sigma_val:.4f}",
-            "LSL": f"{lsl:.4f}",
-            "USL": f"{usl:.4f}",
-            "Cpk": cpk_display,
-            "n": len(data),
-        })
+        stats.append(
+            {
+                "Parameter": param,
+                "Mean": f"{mean_val:.4f}",
+                "Sigma": f"{sigma_val:.4f}",
+                "LSL": f"{lsl:.4f}",
+                "USL": f"{usl:.4f}",
+                "Cpk": cpk_display,
+                "n": len(data),
+            }
+        )
 
-        # 3f. 绘制分布图并保存PNG（用于HTML报告）
-        img_file = os.path.join(config.output.img_dir, f"{param.replace('/', '_')}.png")
+        # 3f. 绘制分布图（图片保留在内存中，后续用于HTML和PDF报告）
         fig = plot_histogram_with_modern_style(
-            data, param, lsl, usl, mean_val, sigma_val, cpk, img_file
+            data, param, lsl, usl, mean_val, sigma_val, cpk
         )
         fig_dict[param] = fig
 
@@ -914,9 +1001,9 @@ def main(config: ProjectConfig = None, config_yaml: str = None, project_id: str 
     print(f"✅ Successfully processed {len(stats)} test items")
     print()
 
-    # --- 步骤4: 生成HTML报告 ---
+    # --- 步骤4: 生成HTML报告（图片Base64内嵌，无需图片文件夹） ---
     print(f"🌐 Generating HTML report: {config.output.html}")
-    generate_html_report(stats, config.output.img_dir, config.output.html)
+    generate_html_report(stats, fig_dict, config.output.html)
     print(f"✅ HTML report saved to: {config.output.html}")
     print()
 
@@ -940,7 +1027,9 @@ def main(config: ProjectConfig = None, config_yaml: str = None, project_id: str 
         print(f"Max Cpk: {np.max(cpk_values):.3f}")
 
     excellent = len([s for s in stats if s["Cpk"] != "inf" and float(s["Cpk"]) >= 1.33])
-    acceptable = len([s for s in stats if s["Cpk"] != "inf" and 1.0 <= float(s["Cpk"]) < 1.33])
+    acceptable = len(
+        [s for s in stats if s["Cpk"] != "inf" and 1.0 <= float(s["Cpk"]) < 1.33]
+    )
     poor = len([s for s in stats if s["Cpk"] != "inf" and float(s["Cpk"]) < 1.0])
 
     print(f"Cpk ≥ 1.33 (Excellent): {excellent}")
@@ -951,7 +1040,6 @@ def main(config: ProjectConfig = None, config_yaml: str = None, project_id: str 
     print("🎉 All reports generated successfully!")
     print(f"   - HTML: {config.output.html}")
     print(f"   - PDF:  {config.output.pdf}")
-    print(f"   - Images: {config.output.img_dir}/")
     print()
 
 
@@ -962,15 +1050,19 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description="SPC Statistical Analysis Tool - "
-                    "从CSV数据生成SPC统计分析报告（HTML + PDF）"
+        "从CSV数据生成SPC统计分析报告（HTML + PDF）"
     )
     parser.add_argument(
-        "--config", type=str, default=None,
-        help="YAML配置文件路径（默认: 脚本同级目录下的 spc_config.yaml）"
+        "--config",
+        type=str,
+        default=None,
+        help="YAML配置文件路径（默认: 脚本同级目录下的 spc_config.yaml）",
     )
     parser.add_argument(
-        "--project", type=str, default=None,
-        help="项目ID（对应YAML中项目的id字段；不指定则使用第一个项目）"
+        "--project",
+        type=str,
+        default=None,
+        help="项目ID（对应YAML中项目的id字段；不指定则使用第一个项目）",
     )
     args = parser.parse_args()
 

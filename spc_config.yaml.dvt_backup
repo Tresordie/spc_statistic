@@ -19,12 +19,13 @@ projects:
   # ============================================================
   # 项目1: EHM PCBA test - Metro_EHM_BFT_301
   # ============================================================
-  - name: "EHM_PCBA_BFT"
+  - name: "EHM PCBA test"
     id: "ehm_pcba_test"
-    csv_file: "./Metro_EHM_BFT_301_summary_sort_20260706_102733.csv"
+    csv_file: "./Metro_EHM_BFT_301_summary_sort_20260617_223411.csv"
     output:
-      html: "ehm_pcba_test.html"
-      pdf: "ehm_pcba_test.pdf"
+      html: "ehm_pcba_test_after_improved_upper_plate.html"
+      pdf: "ehm_pcba_test_after_improved_upper_plate.pdf"
+      img_dir: "ehm_pcba_test_after_improved_upper_plate"
     spec_limits:
       VBATT_ON_4V2: [4.1, 4.3]
       PP4V2_VSYS_DYNAMO: [4.1, 4.3]
@@ -36,13 +37,13 @@ projects:
       DUT_BQ2_VBat: [3.4, 3.6]
       Charger_Difference: [-0.1, 0.1]
       VBATT_Current_IDLE: [0.038, 0.05]
-      AccX: [-0.2, 0.2] # pvt
-      AccY: [-0.2, 0.2] # pvt
+      AccX: [-0.01, 0.032]
+      AccY: [-0.01, 0.04]
       AccZ: [-1.1, -0.9]
       ACC_SQRT: [0.9, 1.1]
-      GyroX: [-3, 3] # pvt
+      GyroX: [-1.2, 1.2]
       GyroY: [-3, 2]
-      GyroZ: [-1.5, 2] # pvt
+      GyroZ: [-1.4, 1.4]
       PP5V0_T2P_Disabled: [0, 0.2]
       PP5V0_T2P_Enabled: [4.74, 5.17]
       MCU_TO_T2P_UART_TXD_5V_OUT_HIGH: [4.74, 5.17]
@@ -77,9 +78,9 @@ projects:
       Motor_Direction2_Current: [0.29, 0.35]
       Fake_Wheel_Power_4Hz: [4.75, 5.25]
       Motor_Direction2_Halted_Voltage: [-0.2, 0.2]
-      Motor_Direction2_Halted_Current: [-0.003, 0.003] # pvt
+      Motor_Direction2_Halted_Current: [-0.002, 0.002]
       Battery_Simulator_3V5: [3.45, 3.55]
-      Recovery_Port_NoInput_Detect: [0, 0]
+      Recovery_Port_NoInput_Detect: [0, 0.2]
       PPVAR_VCU_CONN_ADCRead_RP_NoInput: [0, 0.2]
       Recovery_Power_Apply: [11.5, 12.5]
       Recovery_Port_Input_Detect: [1, 1]
@@ -91,17 +92,17 @@ projects:
       IBAT1_NTC_Normal_RP: [1200, 1600]
       VBUS2_NTC_Normal_RP: [10.5, 12]
       VBAT2_NTC_Normal_RP: [3.75, 3.95]
-      IBUS2_NTC_Normal_RP: [0, 200] # pvt
+      IBUS2_NTC_Normal_RP: [-20, 80]
       IBAT2_NTC_Normal_RP: [0, 100]
       Battery_Current_RP12V_NTC_Normal: [-1.6, -1.2]
       VBUS1_NTC_Cold_RP: [11.5, 12.5]
       VBAT1_NTC_Cold_RP: [3.45, 3.55]
-      IBUS1_NTC_Cold_RP: [0, 200] # pvt
+      IBUS1_NTC_Cold_RP: [0, 100]
       IBAT1_NTC_Cold_RP: [0, 100]
       Battery_Current_RP12V_NTC_Cold: [0, 0.005]
       VBUS1_NTC_Hot_RP: [11.5, 12.5]
       VBAT1_NTC_Hot_RP: [3.45, 3.55]
-      IBUS1_NTC_Hot_RP: [0, 200] # pvt
+      IBUS1_NTC_Hot_RP: [0, 100]
       IBAT1_NTC_Hot_RP: [0, 100]
       Battery_Current_RP12V_NTC_Hot: [0, 0.005]
       HCT_DET_State: [1, 1]
@@ -110,12 +111,12 @@ projects:
       PPVAR_VCU_CONN_ADCRead_HCT_Input: [11.5, 12.5]
       VBUS2_NTC_Normal_HCT: [11.5, 12.5]
       VBAT2_NTC_Normal_HCT: [3.7, 3.85]
-      IBUS2_NTC_Normal_HCT: [240, 500] # pvt
+      IBUS2_NTC_Normal_HCT: [300, 450]
       IBAT2_NTC_Normal_HCT: [900, 1200]
       Battery_Current_HCT_NTC_Normal: [-1.2, -0.9]
       VBUS2_NTC_Hot_RP: [11.5, 12.5]
       VBAT2_NTC_Hot_RP: [3.45, 3.55]
-      IBUS2_NTC_Hot_RP: [0, 200] # pvt
+      IBUS2_NTC_Hot_RP: [-20, 90]
       IBAT2_NTC_Hot_RP: [0, 100]
       Battery_Current_HCT_NTC_Hot: [0, 0.08]
       Solar_Power: [7.75, 8.25]
@@ -123,7 +124,7 @@ projects:
       VBAT1_NTC_Normal_SolarLowCurrent: [3.5, 3.65]
       IBUS1_NTC_Normal_SolarLowCurrent: [150, 300]
       IBAT1_NTC_Normal_SolarLowCurrent: [200, 450]
-      Battery_Current_SolarLowCurrent_NTC_Normal: [-0.45, -0.1] # pvt
+      Battery_Current_SolarLowCurrent_NTC_Normal: [-0.45, -0.2]
       Solar_Power_Apply_HighCurrent: [7.75, 8.25]
       VBUS1_NTC_Normal_SolarHighCurrent: [6, 8]
       VBAT1_NTC_Normal_SolarHighCurrent: [3.7, 4]
@@ -134,15 +135,15 @@ projects:
       Dynamo_5mph_Doubler_Voltage: [8, 10.5]
       VBUS2_NTC_Normal_Dynamo5mph: [5, 10.5]
       VBAT2_NTC_Normal_Dynamo5mph: [3.4, 3.65]
-      IBUS2_NTC_Normal_Dynamo5mph: [0, 200] # pvt
+      IBUS2_NTC_Normal_Dynamo5mph: [0, 150]
       IBAT2_NTC_Normal_Dynamo5mph: [-100, 150]
       Battery_Current_Dynamo5mph_NTC_Normal: [-0.15, 0.1]
       Dynamo_Simulator_15mph: [5.75, 6.25]
       Dynamo_15mph_Doubler_Voltage: [12, 16.5]
-      Dynamo_15mph_Speed_Pulse_Sense: [1000, 2000] # pvt
+      Dynamo_15mph_Speed_Pulse_Sense: [1500, 2500]
       VBUS2_NTC_Normal_Dynamo15mph: [9.5, 11.5]
       VBAT2_NTC_Normal_Dynamo15mph: [3.4, 3.65]
-      IBUS2_NTC_Normal_Dynamo15mph: [10, 300] # pvt
+      IBUS2_NTC_Normal_Dynamo15mph: [50, 200]
       IBAT2_NTC_Normal_Dynamo15mph: [50, 500]
       Battery_Current_Dynamo15mph_NTC_Normal: [-0.5, 0.2]
       Dynamo_15mph_Doubler_NoLoad: [13, 17]
@@ -157,7 +158,7 @@ projects:
       Dynamo_40mph_Doubler_ZenerD505_Temp: [10, 45]
       VBUS2_NTC_Normal_Dynamo40mph_NoLoad: [11.5, 12.5]
       VBAT2_NTC_Normal_Dynamo40mph_NoLoad: [3.45, 3.55]
-      IBUS2_NTC_Normal_Dynamo40mph_NoLoad: [0, 200] # pvt
+      IBUS2_NTC_Normal_Dynamo40mph_NoLoad: [-20, 80]
       IBAT2_NTC_Normal_Dynamo40mph_NoLoad: [0, 100]
       Battery_Current_Dynamo40mph_NTC_Normal_NoLoad: [0, 0.1]
       PPVAR_VCU_CONN_Power_Input: [11.8, 12.2]
@@ -177,19 +178,20 @@ projects:
       TailLight_Enabled_Out_Current: [0, 0.1]
       TailLight_Disabled_Out_Voltage: [0, 0.6]
       TailLight_Disabled_Out_Current: [0, 0.002]
-      LowPower_Mode_Current: [0.0, 0.001]
+      LowPower_Mode_Current: [0.002, 0.004]
 
   # ============================================================
   # 项目2: EHM module test - Metro_EHM_Module_302
   # ============================================================
-  - name: "EHM_MODULE_FT"
+  - name: "EHM module test"
     id: "ehm_module_test"
     csv_file: "./Metro_EHM_Module_302_summary_sort_20260623_144334.csv"
     output:
       html: "ehm_module_test_after_cycle_time_optimized.html"
       pdf: "ehm_module_test_after_cycle_time_optimized.pdf"
+      img_dir: "ehm_module_test_after_cycle_time_optimized"
     spec_limits:
-      EHM_PCB_ID: [4, 4]
+      EHM_PCB_ID: [3, 3]
       EHM_ImuAccId: [0, 500]
       EHM_ImuAccX: [-0.2, 0]
       EHM_ImuAccY: [-1.1, -0.9]
@@ -265,12 +267,13 @@ projects:
   # ============================================================
   # 项目3: FATP 932 test - Metro_Hybrid_FATP932
   # ============================================================
-  - name: "Hybrid_FATP932"
-    id: "hybrid_fatp_932_test"
+  - name: "FATP 932 test"
+    id: "fatp_932_test"
     csv_file: "./Metro_Hybrid_FATP932_302_summary_sort_20260623_144334.csv"
     output:
       html: "Metro_Hybrid_FATP932.html"
       pdf: "Metro_Hybrid_FATP932.pdf"
+      img_dir: "Metro_Hybrid_FATP932"
     spec_limits:
       EHM_Recovery: [1, 1]
       ALS_Function: [3, 30]
@@ -315,12 +318,13 @@ projects:
   # ============================================================
   # 项目4: FATP 933 test - Metro_Hybrid_FATP932
   # ============================================================
-  - name: "Hybrid_FATP933"
-    id: "hybrid_fatp_933_test"
+  - name: "FATP 933 test"
+    id: "fatp_933_test"
     csv_file: "./Metro_Hybrid_FATP932_302_summary_sort_20260623_144334.csv"
     output:
       html: "Metro_Hybrid_FATP933.html"
       pdf: "Metro_Hybrid_FATP933.pdf"
+      img_dir: "Metro_Hybrid_FATP933"
     spec_limits:
       Motor_CalibratedUnlockPosition: [646, 1200]
       Motor_CalibratedAutolockPosition: [1159, 2152]
@@ -378,12 +382,13 @@ projects:
   # ============================================================
   # 项目5: monolith solar left door
   # ============================================================
-  - name: "MONOLITH_LEFT_DOOR"
+  - name: "monolith solar left door"
     id: "monolith_solar_left_door"
     csv_file: "./Metro_Hybrid_FATP932_302_summary_sort_20260623_144334.csv"
     output:
       html: "Monolith_Solar_Left_Door.html"
       pdf: "Monolith_Solar_Left_Door.pdf"
+      img_dir: "Monolith_Solar_Left_Door"
     spec_limits:
       Test_voltage: [6.902, 8.33]
       Test_first_temp_1: [20, 30]
@@ -396,12 +401,13 @@ projects:
   # ============================================================
   # 项目6: monolith solar right door
   # ============================================================
-  - name: "MONOLITH_RIGHT_DOOR"
+  - name: "monolith solar right door"
     id: "monolith_solar_right_door"
     csv_file: "./Metro_Hybrid_FATP932_302_summary_sort_20260623_144334.csv"
     output:
       html: "Monolith_Solar_Right_Door.html"
       pdf: "Monolith_Solar_Right_Door.pdf"
+      img_dir: "Monolith_Solar_Right_Door"
     spec_limits:
       Test_voltage: [6.902, 8.33]
       Test_first_temp_1: [20, 30]
@@ -414,12 +420,13 @@ projects:
   # ============================================================
   # 项目7: cosmo vcu101
   # ============================================================
-  - name: "COSMO_VCU_PCBA101"
-    id: "cosmo_vcu_pcba101"
+  - name: "cosmo vcu101"
+    id: "cosmo_vcu101"
     csv_file: "./Metro_Hybrid_FATP932_302_summary_sort_20260623_144334.csv"
     output:
       html: "Cosmo_VCU101_PCBA.html"
       pdf: "Cosmo_VCU101_PCBA.pdf"
+      img_dir: "Cosmo_VCU101_PCBA"
     spec_limits:
       PP59V0_VEHICLE_CONN_Ohm: [3000, 10000]
       PP14V8_VEHICLE_BOOST_OUT_Ohm: [3000, 10000]
@@ -444,12 +451,13 @@ projects:
   # ============================================================
   # 项目8: cosmo vcu103
   # ============================================================
-  - name: "COSMO_VCU_PCBA103"
-    id: "cosmo_vcu_pcba103"
+  - name: "cosmo vcu103"
+    id: "cosmo_vcu103"
     csv_file: "./Metro_Hybrid_FATP932_302_summary_sort_20260623_144334.csv"
     output:
       html: "Cosmo_VCU103_PCBA.html"
       pdf: "Cosmo_VCU103_PCBA.pdf"
+      img_dir: "Cosmo_VCU103_PCBA"
     spec_limits:
       PP59V0_VEHICLE_CONN_V_Value: [46.00, 51.00]
       PP4V2_BATT_VCC_V_Value: [3.99, 4.41]

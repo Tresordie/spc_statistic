@@ -17,8 +17,7 @@
     │   ├── csv_file: str           # CSV数据文件路径
     │   ├── output: ProjectOutputConfig  # 输出路径配置
     │   │   ├── html: str           # HTML报告输出路径
-    │   │   ├── pdf: str            # PDF报告输出路径
-    │   │   └── img_dir: str        # 分布图输出目录
+    │   │   └── pdf: str            # PDF报告输出路径
     │   └── spec_limits: dict       # {参数名: (LSL, USL)} 规格限
     └── projects: list[ProjectConfig]
 
@@ -48,20 +47,17 @@ class ProjectOutputConfig:
     单个项目的输出路径配置。
 
     属性:
-        html    : str  生成的HTML报告文件路径（绝对路径）
+        html    : str  生成的HTML报告文件路径（绝对路径，图片以Base64内嵌）
         pdf     : str  生成的PDF报告文件路径（绝对路径）
-        img_dir : str  分布图PNG图片输出目录（绝对路径）
 
     YAML对应字段:
         output:
           html: "report.html"
           pdf: "report.pdf"
-          img_dir: "report_images"
     """
 
     html: str     # 输出HTML文件路径
     pdf: str      # 输出PDF文件路径
-    img_dir: str  # 输出图片目录
 
 
 @dataclass
@@ -82,7 +78,7 @@ class ProjectConfig:
         - name: "EHM PCBA test"
           id: "ehm_pcba_test"
           csv_file: "./data.csv"
-          output: { html: ..., pdf: ..., img_dir: ... }
+          output: { html: ..., pdf: ... }
           spec_limits:
             VCC_3V3: [3.2, 3.45]
             VCC_5V0: [4.75, 5.25]
@@ -229,7 +225,6 @@ class ConfigLoader:
         output = ProjectOutputConfig(
             html=self._resolve_path(output_raw["html"], base_dir),
             pdf=self._resolve_path(output_raw["pdf"], base_dir),
-            img_dir=self._resolve_path(output_raw["img_dir"], base_dir),
         )
 
         spec_limits_raw = raw.get("spec_limits", {})

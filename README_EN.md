@@ -1,11 +1,13 @@
-# SPC Statistical Analysis Tool v2.1
+# SPC Statistical Analysis Tool v2.4
 
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 > A modern Statistical Process Control (SPC) analysis tool that automatically generates beautiful HTML and PDF reports.  
-> Supports multi-project YAML configuration and can be easily integrated into PyQt/PySide GUI applications.
+> Supports multi-project YAML configuration and can be easily integrated into PyQt/PySide GUI applications.  
+> Supports Cpk analysis + GRR measurement system analysis + spec limits comparison tool.  
+> HTML reports embed images as Base64 — only HTML+PDF files needed when sharing.
 
 [简体中文](README.md) | **English**
 
@@ -22,6 +24,12 @@ The SPC (Statistical Process Control) Statistical Analysis Tool is a Python tool
 - 🎯 Intelligent Cpk color coding (Excellent/Acceptable/Poor)
 - 🔄 Batch processing of multiple projects via YAML configuration
 - 🔌 Clean Python API for easy integration into PyQt/PySide GUI applications
+- 🔬 **New** Cpk reverse analysis: specify a target Cpk value to automatically derive specification limits (LSL/USL)
+- 📂 **New** Direct analysis of CSV and Excel (.xlsx/.xls) data files
+- 📐 **New** GRR measurement system analysis (ANOVA/AIAG methods), generates HTML/Markdown/PDF reports
+- 📐 GRR reports include %EV, %AV, %GRR percentage metrics
+- 🔍 **New** Spec limits comparison tool: compare CSV file spec limits against YAML configuration item by item
+- 📦 **Improved** HTML reports embed images as Base64 — no separate image folder needed, easier to share
 
 ---
 
@@ -44,6 +52,29 @@ The SPC (Statistical Process Control) Statistical Analysis Tool is a Python tool
 - ✅ Supports both absolute and relative paths
 - ✅ Automatic missing data handling
 - ✅ Clean Python API interface for easy integration with PyQt/PySide
+
+### Cpk Reverse Analysis (New)
+- ✅ Specify target Cpk value to automatically derive specification limits (LSL/USL)
+- ✅ Supports CSV and Excel (.xlsx/.xls) data files
+- ✅ Automatically identifies all numeric columns — no manual spec limit configuration needed
+- ✅ Supports specifying Excel sheet name
+- ✅ Generates HTML + PDF analysis reports
+- ✅ Histograms with normal distribution fitting curves and specification limit annotations
+
+### GRR Measurement System Analysis
+- ✅ Supports ANOVA method and AIAG average-range method
+- ✅ Automatically calculates EV (repeatability), AV (reproducibility), PV (part variation), %GRR, ndc
+- ✅ Reports include %EV, %AV, %GRR percentage metrics
+- ✅ Supports custom operator/part/measurement value column names
+- ✅ Generates HTML + Markdown + PDF reports in three formats
+- ✅ Includes variance component charts, interaction plots, box plots, %GRR gauge
+- ✅ Automatic measurement system pass/conditional/failed determination
+
+### Spec Limits Comparison Tool (New)
+- ✅ Compare CSV file's TEST_NAME / LOWER_LIMIT / UPPER_LIMIT against YAML config's spec_limits for the same project ID
+- ✅ Automatically identifies matched, different, CSV-only, and YAML-only items
+- ✅ Generates timestamped Markdown comparison report
+- ✅ Highlights test items with differences
 
 ---
 
@@ -81,7 +112,6 @@ projects:
     output:
       html: "voltage_report.html"
       pdf: "voltage_report.pdf"
-      img_dir: "voltage_images"
     spec_limits:
       # Format: CSV column name: [LSL, USL]
       # Column names must exactly match those in your CSV file
@@ -113,9 +143,173 @@ for config in loader.get_all_projects():
 ### 4. View Reports
 
 The program generates:
-- `voltage_report.html` — Modern HTML report
+- `voltage_report.html` — Modern HTML report (images Base64 embedded, self-contained)
 - `voltage_report.pdf` — Professional PDF report
-- `voltage_images/` — Distribution plot images directory
+
+---
+
+## 🔬 Cpk Reverse Analysis (New)
+
+Unlike the traditional approach of “known spec limits → calculate Cpk”, the Cpk reverse analysis tool supports **known target Cpk → derive spec limits**.
+
+### Core Principle
+
+Derive reasonable specification limits from data statistics and a target Cpk value:
+
+$$
+LSL = \mu - 3\sigma \cdot Cpk \qquad USL = \mu + 3\sigma \cdot Cpk
+$$
+
+### Command Line Usage
+
+```bash
+# Basic usage: specify data file and target Cpk value
+python cpk_analysis.py --file data.csv --cpk 1.33
+
+# Specify output directory
+python cpk_analysis.py --file data.xlsx --cpk 1.33 --output ./reports
+
+# Specify Excel sheet name
+python cpk_analysis.py --file data.xlsx --cpk 1.67 --sheet Sheet1
+```
+
+### Third-Party Integration
+
+```python
+from spc_statistic import analyze_with_cpk
+
+result = analyze_with_cpk(
+    file_path="data.csv",      # Data file path (CSV or Excel)
+    target_cpk=1.33,           # Target Cpk value
+    output_dir="./reports"     # Report output directory (optional)
+)
+
+# View results
+for s in result['stats_list']:
+    print(f"{s['column']}: LSL={s['lsl']:.4f}, USL={s['usl']:.4f}")
+print(f"HTML report: {result['html_path']}")
+print(f"PDF report: {result['pdf_path']}")
+```
+
+### Return Value
+
+`analyze_with_cpk()` returns a dictionary containing:
+
+| Key | Type | Description |
+|------|------|------|
+| `stats_list` | `list[dict]` | Statistical results for each column (includes mean, std, lsl, usl, cpk_achieved, etc.) |
+| `html_path` | `str` | Full path to the generated HTML report |
+| `pdf_path` | `str` | Full path to the generated PDF report |
+| `file_path` | `str` | Original data file path |
+| `target_cpk` | `float` | Target Cpk value |
+
+---
+
+## 📐 GRR Measurement System Analysis (New)
+
+GRR (Gauge Repeatability & Reproducibility) evaluates measurement system variation to determine if a measurement system is reliable.
+
+### Analysis Methods
+
+| Method | Description | Features |
+|--------|-------------|----------|
+| **ANOVA** (default) | Analysis of Variance | Decomposes interaction and error components, more precise |
+| **AIAG** | Average-Range Method | Traditional method, widely used in industry |
+
+### Data Format
+
+Data files (CSV/Excel) use a long format with three columns: operator, part, and measurement value:
+
+```csv
+operator,part,value
+Operator_A,Part_1,3.35
+Operator_A,Part_1,3.34
+Operator_A,Part_2,3.32
+Operator_B,Part_1,3.36
+...
+```
+
+> 💡 Column names can be customized using `--operator`, `--part`, `--value` parameters
+
+### Command Line Usage
+
+```bash
+# Basic usage (default ANOVA method)
+python grr_analysis.py --file grr_data.csv
+
+# Use AIAG method
+python grr_analysis.py --file grr_data.csv --method AIAG
+
+# Custom column names
+python grr_analysis.py --file data.xlsx --operator 操作员 --part 零件 --value 测量值
+
+# Specify output directory
+python grr_analysis.py --file grr_data.csv --output ./reports
+```
+
+### Third-Party Integration
+
+```python
+from spc_statistic import analyze_grr
+
+result = analyze_grr(
+    file_path="grr_data.csv",
+    operator_col="operator",   # Operator column name
+    part_col="part",           # Part column name
+    value_col="value",         # Measurement value column name
+    method="ANOVA",            # Analysis method: 'ANOVA' or 'AIAG'
+    output_dir="./reports"     # Report output directory (optional)
+)
+
+# View results
+r = result['result']
+print(f"%GRR: {r['pct_grr']:.2f}%")
+print(f"ndc: {r['ndc']}")
+print(f"Verdict: {'✅ Pass' if r['pct_grr'] < 10 else '❌ Fail'}")
+print(f"Markdown report: {result['markdown_path']}")
+print(f"HTML report: {result['html_path']}")
+print(f"PDF report: {result['pdf_path']}")
+```
+
+### Return Value
+
+`analyze_grr()` returns a dictionary containing:
+
+| Key | Type | Description |
+|------|------|------|
+| `result` | `dict` | GRR analysis results (includes EV, AV, PV, %GRR, ndc, etc.) |
+| `markdown_path` | `str` | Markdown report path |
+| `html_path` | `str` | HTML report path |
+| `pdf_path` | `str` | PDF report path |
+
+### GRR Acceptance Criteria
+
+| %GRR | Verdict | Description |
+|------|---------|-------------|
+| < 10% | ✅ Pass | Measurement system acceptable |
+| 10% ~ 30% | ⚠️ Conditional | Decide based on application |
+| ≥ 30% | ❌ Fail | Measurement system needs improvement |
+| ndc ≥ 5 | ✅ | Sufficient resolution |
+| ndc < 5 | ❌ | Insufficient resolution |
+
+### Spec Limits Comparison (New)
+
+Validates whether the spec limits in a CSV data file match the YAML configuration, useful for quality audits and data verification.
+
+#### Command Line Usage
+
+```bash
+# Basic usage
+python limits_compare.py --file data.csv --project ehm_pcba_test
+
+# Specify config file and output directory
+python limits_compare.py --file data.csv --project ehm_pcba_test --config spc_config.yaml --output ./reports
+```
+
+#### Output
+
+- Console prints comparison results (matched, different, CSV-only, YAML-only items)
+- Generates Markdown comparison report (`{datetime}_{project_id}_limits_compare.markdown`)
 
 ---
 
@@ -123,7 +317,11 @@ The program generates:
 
 ```
 spc_statistic/
-├── spc_analysis.py          # Main analysis engine (compute stats, generate reports)
+├── __init__.py              # Package initialization file (exports main APIs)
+├── spc_analysis.py          # Main analysis engine (known spec limits → calculate Cpk)
+├── cpk_analysis.py          # Cpk reverse analysis (known Cpk → derive spec limits)
+├── grr_analysis.py          # GRR measurement system analysis (ANOVA/AIAG methods)
+├── limits_compare.py        # Spec limits comparison tool (CSV vs YAML config)
 ├── config_loader.py         # YAML configuration loader (load, validate, parse)
 ├── spc_statistic.py         # Unified package interface (for module import)
 ├── spc_config.yaml          # YAML multi-project configuration (create your own)
@@ -156,7 +354,6 @@ projects:                          # Project list (define as many as you need)
     output:
       html: "report.html"          # HTML report output path
       pdf: "report.pdf"            # PDF report output path
-      img_dir: "report_images"     # Distribution images output directory
 
     spec_limits:                   # Specification limits definition
       # Format: CSV column name: [LSL, USL]
@@ -196,7 +393,10 @@ This project is designed as a **standalone Python toolkit** with a clean API int
 | Module | Entry Point | Description |
 |--------|-------------|-------------|
 | `config_loader.py` | `ConfigLoader` | Load and manage YAML configurations |
-| `spc_analysis.py` | `main()` | Execute SPC analysis and generate reports |
+| `spc_analysis.py` | `main()` | Known spec limits → calculate Cpk and generate reports |
+| `cpk_analysis.py` | `analyze_with_cpk()` | Known target Cpk → derive spec limits and generate reports |
+| `grr_analysis.py` | `analyze_grr()` | GRR measurement system analysis (ANOVA/AIAG) and generate reports |
+| `limits_compare.py` | `main()` | Spec limits comparison (CSV vs YAML config), generates Markdown report |
 | `spc_statistic.py` | Unified import | Provides unified package import interface |
 
 ### Step 1: Copy This Project Into Your Application
@@ -204,8 +404,10 @@ This project is designed as a **standalone Python toolkit** with a clean API int
 ```
 your_project/
 ├── main_app.py              # Your PyQt/PySide main application
-├── spc_module/              # ← Copy this project's files here
+├── spc_statistic/           # ← Copy this project's files here (as a Python package)
+│   ├── __init__.py
 │   ├── spc_analysis.py
+│   ├── cpk_analysis.py
 │   ├── config_loader.py
 │   ├── spc_statistic.py
 │   ├── spc_config.yaml      # User-editable external config file
@@ -216,11 +418,13 @@ your_project/
 ### Step 2: Import and Use
 
 ```python
-import sys
-sys.path.insert(0, "spc_module")  # Add SPC module directory to Python path
+# Method 1: Import as a package (recommended)
+from spc_statistic import ConfigLoader, run_spc_analysis, analyze_with_cpk
 
-from spc_analysis import main as run_spc_analysis
-from config_loader import ConfigLoader
+# Method 2: Import from submodules
+from spc_statistic.config_loader import ConfigLoader
+from spc_statistic.spc_analysis import main as run_spc_analysis
+from spc_statistic.cpk_analysis import analyze_with_cpk
 ```
 
 ### Step 3: Get Project List (Populate Dropdown)
@@ -228,7 +432,7 @@ from config_loader import ConfigLoader
 ```python
 from PyQt5.QtWidgets import QComboBox
 
-loader = ConfigLoader("spc_module/spc_config.yaml")
+loader = ConfigLoader("spc_statistic/spc_config.yaml")
 loader.load()
 
 combo = QComboBox()
@@ -271,13 +475,12 @@ worker.start()
 
 ```python
 import sys
-sys.path.insert(0, "spc_module")
+sys.path.insert(0, ".")  # Ensure the parent directory of spc_statistic is in Python path
 
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget,
     QVBoxLayout, QPushButton, QComboBox, QLabel, QMessageBox)
 from PyQt5.QtCore import QThread, pyqtSignal
-from spc_analysis import main as run_spc_analysis
-from config_loader import ConfigLoader
+from spc_statistic import ConfigLoader, run_spc_analysis, analyze_with_cpk
 
 
 class SPCWorker(QThread):
@@ -307,7 +510,7 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(central)
 
         # Load configuration
-        self.loader = ConfigLoader("spc_module/spc_config.yaml")
+        self.loader = ConfigLoader("spc_statistic/spc_config.yaml")
         self.loader.load()
 
         # Project selection dropdown
@@ -357,8 +560,9 @@ if __name__ == "__main__":
 ### Error Handling Recommendations
 
 ```python
-from config_loader import ConfigLoader
+from spc_statistic import ConfigLoader, analyze_with_cpk
 
+# Error handling for YAML configuration mode
 try:
     loader = ConfigLoader("spc_config.yaml")
     loader.load()
@@ -369,6 +573,14 @@ except ValueError as e:
     print(f"Configuration file format error: {e}")
 except KeyError:
     print("Specified project ID does not exist")
+
+# Error handling for Cpk reverse analysis
+try:
+    result = analyze_with_cpk("data.csv", target_cpk=1.33)
+except FileNotFoundError as e:
+    print(f"Data file not found: {e}")
+except ValueError as e:
+    print(f"Data file format error: {e}")
 ```
 
 ---
