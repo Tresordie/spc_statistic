@@ -539,7 +539,7 @@ projects:
       Leak_KPa: [-0.2, 0.2]
 
   # ============================================================
-  # 项目10: metro leak test
+  # 项目10: metro small solar panel flat functional test
   # ============================================================
   - name: "METRO_SMALL_SOLAR_PANEL_FLAT_FT"
     id: "metro_small_solar_panel_flat_ft"
@@ -547,6 +547,126 @@ projects:
     output:
       html: "metro_small_solar_panel_flat_ft.html"
       pdf: "metro_small_solar_panel_flat_ft.pdf"
+    spec_limits:
+      Test_voltage: [5.85, 6.8]
+      Test_first_temp_1: [20, 30]
+      Test_first_temp_2: [20, 30]
+      Test_Current: [0.095, 0.15]
+      Test_Count_Power: [0.58, 0.884]
+      Test_second_temp_1: [20, 30]
+      Test_second_temp_2: [20, 30]
+      Read_MES_Flat_TEMP1: [20, 30]
+      Read_MES_Flat_TEMP2: [20, 30]
+      Read_MES_Flat_Voltage: [5.85, 6.8]
+      Read_MES_Flat_Current: [0.095, 0.15]
+      Power_difference: [0, 0.06]
+      Power_percentage_drop: [0, 0.06]
+
+  # ============================================================
+  # 项目11: metro small solar module functional test
+  # ============================================================
+  - name: "METRO_SMALL_SOLAR_MODULE_FT"
+    id: "metro_small_solar_module_ft"
+    csv_file: ""
+    output:
+      html: "metro_small_solar_module_ft.html"
+      pdf: "metro_small_solar_module_ft.pdf"
+    spec_limits:
+      Test_voltage: [5.85, 6.8]
+      Test_first_temp_1: [20, 30]
+      Test_first_temp_2: [20, 30]
+      Test_Current: [0.095, 0.15]
+      Test_Count_Power: [0.58, 0.884]
+      Test_second_temp_1: [20, 30]
+      Test_second_temp_2: [20, 30]
+      Read_MES_Flat_TEMP1: [20, 30]
+      Read_MES_Flat_TEMP2: [20, 30]
+      Read_MES_Flat_Voltage: [5.85, 6.8]
+      Read_MES_Flat_Current: [0.095, 0.15]
+      Power_difference: [0, 0.06]
+      Power_percentage_drop: [0, 0.06]
+
+  # ============================================================
+  # 项目12: metro small solar basket functional test
+  # ============================================================
+  - name: "METRO_SMALL_SOLAR_BASKET_FT"
+    id: "metro_small_solar_basket_ft"
+    csv_file: ""
+    output:
+      html: "metro_small_solar_basket_ft.html"
+      pdf: "metro_small_solar_basket_ft.pdf"
+    spec_limits:
+      Test_voltage: [5.85, 6.8]
+      Test_first_temp_1: [20, 30]
+      Test_first_temp_2: [20, 30]
+      Test_Current: [0.095, 0.15]
+      Test_Count_Power: [0.58, 0.884]
+      Test_second_temp_1: [20, 30]
+      Test_second_temp_2: [20, 30]
+      Read_MES_Flat_TEMP1: [20, 30]
+      Read_MES_Flat_TEMP2: [20, 30]
+      Read_MES_Flat_Voltage: [5.85, 6.8]
+      Read_MES_Flat_Current: [0.095, 0.15]
+      Power_difference: [0, 0.06]
+      Power_percentage_drop: [0, 0.06]
+
+  # ============================================================
+  # 项目13: metro taco solar panel flat functional test
+  # ============================================================
+  - name: "METRO_TACO_SOLAR_PANEL_FLAT_FT"
+    id: "metro_taco_solar_panel_flat_ft"
+    csv_file: ""
+    output:
+      html: "metro_taco_solar_panel_flat_ft.html"
+      pdf: "metro_taco_solar_panel_flat_ft.pdf"
+    spec_limits:
+      Test_voltage: [5.85, 6.8]
+      Test_first_temp_1: [20, 30]
+      Test_first_temp_2: [20, 30]
+      Test_Current: [0.095, 0.15]
+      Test_Count_Power: [0.58, 0.884]
+      Test_second_temp_1: [20, 30]
+      Test_second_temp_2: [20, 30]
+      Read_MES_Flat_TEMP1: [20, 30]
+      Read_MES_Flat_TEMP2: [20, 30]
+      Read_MES_Flat_Voltage: [5.85, 6.8]
+      Read_MES_Flat_Current: [0.095, 0.15]
+      Power_difference: [0, 0.06]
+      Power_percentage_drop: [0, 0.06]
+
+  # ============================================================
+  # 项目14: metro taco solar module functional test
+  # ============================================================
+  - name: "METRO_TACO_SOLAR_MODULE_FT"
+    id: "metro_taco_solar_module_ft"
+    csv_file: ""
+    output:
+      html: "metro_taco_solar_module_ft.html"
+      pdf: "metro_taco_solar_module_ft.pdf"
+    spec_limits:
+      Test_voltage: [5.85, 6.8]
+      Test_first_temp_1: [20, 30]
+      Test_first_temp_2: [20, 30]
+      Test_Current: [0.095, 0.15]
+      Test_Count_Power: [0.58, 0.884]
+      Test_second_temp_1: [20, 30]
+      Test_second_temp_2: [20, 30]
+      Read_MES_Flat_TEMP1: [20, 30]
+      Read_MES_Flat_TEMP2: [20, 30]
+      Read_MES_Flat_Voltage: [5.85, 6.8]
+      Read_MES_Flat_Current: [0.095, 0.15]
+      Power_difference: [0, 0.06]
+      Power_percentage_drop: [0, 0.06]
+
+  # ============================================================
+  # 项目15: metro taco solar basket functional test
+  # ============================================================
+  - name: "METRO_TACO_SOLAR_BASKET_FT"
+    id: "metro_taco_solar_basket_ft"
+    csv_file: ""
+    output:
+      html: "metro_taco_solar_basket_ft.html"
+      pdf: "metro_taco_solar_basket_ft.pdf"
     spec_limits:
       Test_voltage: [5.85, 6.8]
       Test_first_temp_1: [20, 30]
