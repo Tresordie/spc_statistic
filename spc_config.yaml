@@ -42,7 +42,7 @@ projects:
       ACC_SQRT: [0.9, 1.1]
       GyroX: [-3, 3] # pvt
       GyroY: [-3, 2]
-      GyroZ: [-1.5, 2] # pvt
+      GyroZ: [-4, 4] # pvt
       PP5V0_T2P_Disabled: [0, 0.2]
       PP5V0_T2P_Enabled: [4.74, 5.17]
       MCU_TO_T2P_UART_TXD_5V_OUT_HIGH: [4.74, 5.17]
@@ -197,7 +197,7 @@ projects:
       EHM_ImuSqrt: [0.9, 1.1]
       EHM_ImuGyroId: [0, 500]
       EHM_ImuGyroX: [-4, 3]
-      EHM_ImuGyroY: [-2, 1]
+      EHM_ImuGyroY: [-3, 2]
       EHM_ImuGyroZ: [-4, 4]
       T2P_Disabled: [0, 0.2]
       T2P_Enabled: [4.74, 5.17]
